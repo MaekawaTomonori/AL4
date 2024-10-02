@@ -12,6 +12,7 @@ class Player{
     const float kMoveSpeed = 0.1f;
     const float kLimitX = 10.f;
     const float kLimitY = 10.f;
+    const float kRotSpeed = 0.01f;
 
     KamataEngine::Input* input_ = nullptr ;
 
@@ -20,6 +21,7 @@ class Player{
     Model* model_ = nullptr;
 
     KamataEngine::Vector3 move {};
+	float turn = 0;
 
     KamataEngine::ObjectColor objColor_ {};
 

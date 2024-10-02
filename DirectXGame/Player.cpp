@@ -21,9 +21,13 @@ void Player::Initialize(Model* model, Camera* camera) {
 
 void Player::Update() {
 
+    turn = static_cast<float>(input_->PushKey(DIK_D) - input_->PushKey(DIK_A)) * kRotSpeed;
+
+    worldTransform_.rotation_.y += turn;
+
     move = {
-        static_cast<float>(input_->PushKey(DIK_D) - input_->PushKey(DIK_A)) * kMoveSpeed ,
-        static_cast<float>(input_->PushKey(DIK_W) - input_->PushKey(DIK_S))* kMoveSpeed,
+        static_cast<float>(input_->PushKey(DIK_RIGHT) - input_->PushKey(DIK_LEFT)) * kMoveSpeed ,
+        static_cast<float>(input_->PushKey(DIK_UP) - input_->PushKey(DIK_DOWN))* kMoveSpeed,
         0
     };
 
