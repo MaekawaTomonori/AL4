@@ -34,7 +34,7 @@ void Scene::Initialize() {
 }
 
 void Scene::Update() {
-	if(ChangeScene())return;
+    ChangeScene();
 
     scene_->Update();
 }
