@@ -1,5 +1,7 @@
 #include <KamataEngine.h>
 
+#include "Scene.h"
+
 using namespace KamataEngine;
 
 // Windowsアプリでのエントリーポイント(main関数)
@@ -51,6 +53,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	primitiveDrawer->Initialize();
 #pragma endregion
 
+    Scene* scene = new Scene();
+	scene->Initialize();
+
 	// メインループ
 	while (true) {
 		// メッセージ処理
@@ -62,6 +67,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		imguiManager->Begin();
 		// 入力関連の毎フレーム処理
 		input->Update();
+		//Scene
+        scene->Update();
 		// 軸表示の更新
 		axisIndicator->Update();
 		// ImGui受付終了
@@ -69,6 +76,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// 描画開始
 		dxCommon->PreDraw();
+        //Scene
+        scene->Draw();
 		// 軸表示の描画
 		axisIndicator->Draw();
 		// プリミティブ描画のリセット
@@ -78,6 +87,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// 描画終了
 		dxCommon->PostDraw();
 	}
+
+	delete scene;
 
 	// 3Dモデル解放
 	Model::StaticFinalize();
