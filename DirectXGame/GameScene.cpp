@@ -11,10 +11,10 @@ GameScene::GameScene() {
 }
 
 GameScene::~GameScene() {
+    delete debugCamera_;
     delete player_;
     delete camera_;
     delete model_;
-    delete debugCamera_;
 }
 
 void GameScene::Initialize() {

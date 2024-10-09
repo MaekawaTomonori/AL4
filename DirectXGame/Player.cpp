@@ -3,8 +3,13 @@
 #include <algorithm>
 #include <imgui.h>
 
+#include "PlayerBullet.h"
 #include "math/MathUtility.h"
 Player::~Player() {
+    if (bullet_){
+        delete bullet_;
+        bullet_ = nullptr;
+    }
 }
 
 void Player::Initialize(Model* model, Camera* camera) {
@@ -16,10 +21,11 @@ void Player::Initialize(Model* model, Camera* camera) {
     objColor_.Initialize();
     worldTransform_.Initialize();
 
-
+    
 }
 
 void Player::Update() {
+
 
     turn = static_cast<float>(input_->PushKey(DIK_D) - input_->PushKey(DIK_A)) * kRotSpeed;
 
@@ -40,6 +46,11 @@ void Player::Update() {
 
     worldTransform_.UpdateMatrix();
 
+    Attack();
+
+    if(bullet_){
+        bullet_->Update();
+    }
 
     ImGui::Begin("Player");
     ImGui::Text("Player Position: %f, %f, %f", worldTransform_.translation_.x, worldTransform_.translation_.y, worldTransform_.translation_.z);
@@ -48,4 +59,22 @@ void Player::Update() {
 
 void Player::Draw() const {
     model_->Draw(worldTransform_, *camera_, &objColor_);
+
+    if (bullet_){
+        bullet_->Draw(*camera_);
+    }
+}
+
+void Player::Attack() {
+    if (input_->TriggerKey(DIK_SPACE)){
+        PlayerBullet* nBullet = new PlayerBullet;
+        nBullet->Initialize(model_, worldTransform_.translation_);
+
+        if(bullet_){
+            delete bullet_;
+            bullet_ = nullptr;
+        }
+
+        bullet_ = nBullet;
+    }
 }

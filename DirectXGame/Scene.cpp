@@ -12,7 +12,8 @@ bool Scene::ChangeScene() {
             //scene_ = std::make_unique<TitleScene>();
             break;
         case Phase::GAME:
-            scene_ = std::make_unique<GameScene>();
+            scene_.reset();
+    		scene_ = std::make_unique<GameScene>();
             break;
         case Phase::CLEAR:
             //scene_ = std::make_unique<ClearScene>();

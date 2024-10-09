@@ -4,6 +4,7 @@
 #include <3d/Camera.h>
 #include <input/Input.h>
 
+class PlayerBullet;
 using KamataEngine::WorldTransform;
 using KamataEngine::Model;
 using KamataEngine::Camera;
@@ -25,10 +26,15 @@ class Player{
 
     KamataEngine::ObjectColor objColor_ {};
 
+    PlayerBullet* bullet_ = nullptr;
+
 public:
     ~Player();
     void Initialize(Model* model, Camera* camera);
     void Update();
     void Draw() const;
+
+private:
+	void Attack();
 };
 
