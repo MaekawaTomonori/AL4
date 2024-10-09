@@ -5,14 +5,17 @@
 #include <3d/Model.h>
 #include <base/DirectXCommon.h>
 
+#include "Enemy.h"
 #include "Player.h"
 
 GameScene::GameScene() {
 }
 
 GameScene::~GameScene() {
-    delete debugCamera_;
     delete player_;
+    delete enemy_;
+
+    delete debugCamera_;
     delete camera_;
     delete model_;
 }
@@ -24,18 +27,27 @@ void GameScene::Initialize() {
 
     camera_ = new Camera;
     camera_->Initialize();
+    debugCamera_ = new KamataEngine::DebugCamera(1280, 720);
 
     player_ = new Player();
     player_->Initialize(model_, camera_);
 
-    debugCamera_ = new KamataEngine::DebugCamera(1280, 720);
+    enemy_ = new Enemy();
+    enemy_->Initialize(model_);
 
-    KamataEngine::AxisIndicator::GetInstance()->SetVisible(true);
-    KamataEngine::AxisIndicator::GetInstance()->SetTargetCamera(camera_);
+
+    KamataEngine::AxisIndicator::GetInstance()->Initialize();
+    KamataEngine::AxisIndicator::SetVisible(true);
+    KamataEngine::AxisIndicator::SetTargetCamera(camera_);
 }
 
 void GameScene::Update() {
     player_->Update();
+
+    if (enemy_){
+        enemy_->Update();
+    }
+
 
     #ifdef _DEBUG
     if (KamataEngine::Input::GetInstance()->TriggerKey(DIK_SPACE)){
@@ -69,6 +81,11 @@ void GameScene::Draw() {
     Model::PreDraw(commandList_.Get());
 
     player_->Draw();
+
+    if (enemy_){
+        enemy_->Draw(camera_);
+    }
+
 
     Model::PostDraw();
 

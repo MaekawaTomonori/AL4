@@ -5,19 +5,23 @@
 
 #include "Scene.h"
 
+
+class Player;
+class Enemy;
 using KamataEngine::Model;
 using KamataEngine::Camera;
 
-class Player;
-
 class GameScene : public iScene{
-    Player* player_ = nullptr;
     Model* model_ = nullptr;
 
     Camera* camera_ = nullptr;
 
     bool isDebugCameraActive_ = false;
     KamataEngine::DebugCamera* debugCamera_ = nullptr;
+
+
+    Player* player_ = nullptr;
+    Enemy* enemy_ = nullptr;
 
 public:
     GameScene();
