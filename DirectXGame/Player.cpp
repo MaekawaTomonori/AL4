@@ -5,11 +5,12 @@
 
 #include "PlayerBullet.h"
 #include "math/MathUtility.h"
+
 Player::~Player() {
-    if (bullet_){
-        delete bullet_;
-        bullet_ = nullptr;
+    for (auto bullet : bullets_){
+        delete bullet;
     }
+    bullets_.clear();
 }
 
 void Player::Initialize(Model* model, Camera* camera) {
@@ -20,8 +21,6 @@ void Player::Initialize(Model* model, Camera* camera) {
 
     objColor_.Initialize();
     worldTransform_.Initialize();
-
-    
 }
 
 void Player::Update() {
@@ -48,8 +47,10 @@ void Player::Update() {
 
     Attack();
 
-    if(bullet_){
-        bullet_->Update();
+    for (auto& bullet : bullets_){
+        if (bullet){
+            bullet->Update();
+        }
     }
 
     ImGui::Begin("Player");
@@ -60,8 +61,10 @@ void Player::Update() {
 void Player::Draw() const {
     model_->Draw(worldTransform_, *camera_, &objColor_);
 
-    if (bullet_){
-        bullet_->Draw(*camera_);
+    for (auto& bullet : bullets_){
+        if (bullet){
+            bullet->Draw(*camera_);
+        }
     }
 }
 
@@ -70,11 +73,6 @@ void Player::Attack() {
         PlayerBullet* nBullet = new PlayerBullet;
         nBullet->Initialize(model_, worldTransform_.translation_);
 
-        if(bullet_){
-            delete bullet_;
-            bullet_ = nullptr;
-        }
-
-        bullet_ = nBullet;
+        bullets_.push_back(nBullet);
     }
 }

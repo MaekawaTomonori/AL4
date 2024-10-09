@@ -26,7 +26,7 @@ class Player{
 
     KamataEngine::ObjectColor objColor_ {};
 
-    PlayerBullet* bullet_ = nullptr;
+    std::pmr::list<PlayerBullet*> bullets_;
 
 public:
     ~Player();
