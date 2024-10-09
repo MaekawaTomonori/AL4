@@ -3,6 +3,16 @@
 #include <cassert>
 #include <3d/Model.h>
 #include <base/TextureManager.h>
+#include <input/Input.h>
+
+#include "EnemyBullet.h"
+
+Enemy::~Enemy() {
+    for (auto& bullet : bullets_){
+        delete bullet;
+    }
+    bullets_.clear();
+}
 
 void Enemy::Initialize(KamataEngine::Model* model) {
 	assert(model);
@@ -10,7 +20,7 @@ void Enemy::Initialize(KamataEngine::Model* model) {
     model_ = model;
 
     worldTransform_.Initialize();
-    worldTransform_.translation_ = {0,0,10};
+    worldTransform_.translation_ = {0,0,50};
 
     textureHandle = KamataEngine::TextureManager::Load("white1x1.png");
     color_ = std::make_unique<KamataEngine::ObjectColor>();
@@ -19,6 +29,14 @@ void Enemy::Initialize(KamataEngine::Model* model) {
 }
 
 void Enemy::Update() {
+    bullets_.remove_if([](const EnemyBullet* bullet){
+        if(bullet->IsDead()){
+            delete bullet;
+            return true;
+        }
+        return false;
+    });
+
 	switch (phase_){
 	case Phase::Approach:
 	default:
@@ -29,14 +47,37 @@ void Enemy::Update() {
 		break;
 	}
 
+    for (auto& bullet : bullets_){
+        if (bullet){
+            bullet->Update();
+        }
+    }
+
     worldTransform_.UpdateMatrix();
 }
 
 void Enemy::Draw(const KamataEngine::Camera* camera) const {
     model_->Draw(worldTransform_, *camera, textureHandle, color_.get());
+
+    for (auto& bullet : bullets_){
+        if (bullet){
+            bullet->Draw(camera);
+        }
+    }
+}
+
+void Enemy::Fire() {
+    KamataEngine::Input* input = KamataEngine::Input::GetInstance();
+    if(input->TriggerKey(DIK_Q)){
+        EnemyBullet* bullet = new EnemyBullet();
+        bullet->Initialize(model_, worldTransform_.translation_);
+
+        bullets_.push_back(bullet);
+    }
 }
 
 void Enemy::Approach() {
+    Fire();
 	worldTransform_.translation_ += kApproachSpeed;
 
     if (worldTransform_.translation_.z < 0){
