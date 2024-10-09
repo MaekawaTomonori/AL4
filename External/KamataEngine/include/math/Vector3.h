@@ -15,6 +15,12 @@ struct Vector3 final {
         y += v.y;
         z += v.z;
     }
+    void operator+=(const float s) {
+        x += s;
+        y += s;
+        z += s;
+    }
+
 };
 
 } // namespace KamataEngine

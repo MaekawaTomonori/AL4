@@ -19,11 +19,35 @@ void Enemy::Initialize(KamataEngine::Model* model) {
 }
 
 void Enemy::Update() {
-    worldTransform_.translation_.z -= kMoveSpeed;
+	switch (phase_){
+	case Phase::Approach:
+	default:
+        Approach();
+		break;
+	case Phase::Leave:
+        Leave();
+		break;
+	}
 
     worldTransform_.UpdateMatrix();
 }
 
 void Enemy::Draw(const KamataEngine::Camera* camera) const {
     model_->Draw(worldTransform_, *camera, textureHandle, color_.get());
+}
+
+void Enemy::Approach() {
+	worldTransform_.translation_ += kApproachSpeed;
+
+    if (worldTransform_.translation_.z < 0){
+        phase_ = Phase::Leave;
+    }
+}
+
+void Enemy::Leave() {
+	worldTransform_.translation_ += kLeaveSpeed;
+
+    if (worldTransform_.translation_.z > 10){
+        phase_ = Phase::Approach;
+    }
 }
