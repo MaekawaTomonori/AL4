@@ -15,6 +15,8 @@ class Player{
     const float kLimitY = 10.f;
     const float kRotSpeed = 0.01f;
 
+    const float kBulletSpeed = 1.0f;
+
     KamataEngine::Input* input_ = nullptr ;
 
 	WorldTransform worldTransform_{};

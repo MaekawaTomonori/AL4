@@ -24,7 +24,13 @@ void Player::Initialize(Model* model, Camera* camera) {
 }
 
 void Player::Update() {
-
+    bullets_.remove_if([](const PlayerBullet* bullet){
+        if (bullet->IsDead()){
+            delete bullet;
+            return true;
+        }
+        return false;
+    });
 
     turn = static_cast<float>(input_->PushKey(DIK_D) - input_->PushKey(DIK_A)) * kRotSpeed;
 
@@ -70,8 +76,12 @@ void Player::Draw() const {
 
 void Player::Attack() {
     if (input_->TriggerKey(DIK_SPACE)){
+        KamataEngine::Vector3 velocity(0, 0, kBulletSpeed);
+
+        velocity = KamataEngine::MathUtility::TransformNormal(velocity, worldTransform_.matWorld_);
+
         PlayerBullet* nBullet = new PlayerBullet;
-        nBullet->Initialize(model_, worldTransform_.translation_);
+        nBullet->Initialize(model_, worldTransform_.translation_, velocity);
 
         bullets_.push_back(nBullet);
     }
